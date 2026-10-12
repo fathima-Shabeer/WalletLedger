@@ -1,10 +1,75 @@
 ﻿@page
 @model IndexModel
 @{
-    ViewData["Title"] = "Home page";
+    ViewData["Title"] = "Accounts";
 }
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+@if (Model.Message is not null)
+{
+    <div class="alert alert-success">@Model.Message</div>
+}
+@if (Model.Error is not null)
+{
+    <div class="alert alert-danger">@Model.Error</div>
+}
+
+<div class="row g-4">
+    <div class="col-lg-7">
+        <h4>Accounts</h4>
+        <table class="table table-hover align-middle bg-white">
+            <thead>
+                <tr><th>Owner</th><th class="text-end">Balance</th></tr>
+            </thead>
+            <tbody>
+                @foreach (var a in Model.Accounts)
+                {
+                    <tr>
+                        <td><a asp-page="/Accounts/Details" asp-route-id="@a.Id">@a.OwnerName</a></td>
+                        <td class="text-end">@a.Balance.ToString("N2") @a.Currency</td>
+                    </tr>
+                }
+                @if (Model.Accounts.Count == 0)
+                {
+                    <tr><td colspan="2" class="text-muted">No accounts yet. Create one.</td></tr>
+                }
+            </tbody>
+        </table>
+    </div>
+
+    <div class="col-lg-5">
+        <div class="card mb-4">
+            <div class="card-body">
+                <h5 class="card-title">New account</h5>
+                <form method="post" asp-page-handler="Create">
+                    <input asp-for="OwnerName" class="form-control mb-2" placeholder="Owner name" />
+                    <button class="btn btn-primary">Create</button>
+                </form>
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title">Transfer</h5>
+                <form method="post" asp-page-handler="Transfer">
+                    <input type="hidden" asp-for="Key" />
+                    <select asp-for="FromId" class="form-select mb-2">
+                        <option value="">From account</option>
+                        @foreach (var a in Model.Accounts)
+                        {
+                            <option value="@a.Id">@a.OwnerName (@a.Balance.ToString("N2"))</option>
+                        }
+                    </select>
+                    <select asp-for="ToId" class="form-select mb-2">
+                        <option value="">To account</option>
+                        @foreach (var a in Model.Accounts)
+                        {
+                            <option value="@a.Id">@a.OwnerName</option>
+                        }
+                    </select>
+                    <input asp-for="Amount" type="number" step="0.01" min="0.01" class="form-control mb-2" placeholder="Amount" />
+                    <button class="btn btn-success">Send</button>
+                </form>
+            </div>
+        </div>
+    </div>
 </div>
