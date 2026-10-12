@@ -186,6 +186,3 @@ Use the port your app prints on startup. Errors return JSON such as `{ "error": 
 6. **Phase 6:** OpenTelemetry, health checks, reconciliation job.
 7. **Phase 7:** CI/CD, infrastructure as code, deployment to Azure.
 
-## License
-
-Add your preferred license (for example MIT) before publishing.
